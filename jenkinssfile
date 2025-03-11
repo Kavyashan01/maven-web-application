@@ -14,7 +14,7 @@ pipeline{
           sh 'cp target/maven-web-application.war /opt/apache-tomcat-9.0.102/webapps/'
           }
        }
-     stage('deploy on tomcat')
+     stage('deploy on tomcat'){
        steps{
          deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://65.2.70.176:9090/')], contextpath:null,
         }
