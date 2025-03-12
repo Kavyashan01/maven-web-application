@@ -3,7 +3,7 @@ pipeline{
     maven 'maven'
    }
   stages{
-     stage('mvn build'){
+     stage ('mvn build'){
        steps{
           sh 'mvn clean package'
          }
@@ -12,11 +12,12 @@ pipeline{
              echo"Archiving the Artifacts"
              archiveArtifacts artifacts: '**/target/*.war'
            }
-         }
-     stage('deploy on tomcat'){
+       }
+     }
+     stage ('deploy on tomcat'){
        steps{
          deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://3.110.45.46:9090/')], contextPath: null, war: '**/*.war'
          }
-      }
+     }
    }
 }
