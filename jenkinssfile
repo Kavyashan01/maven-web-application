@@ -2,6 +2,10 @@ node {  // Use the default agent (executor), which would be your server in this 
 
     // Ensure Maven is available (as an environment tool or on the system path)
     def mvnHome = tool name: "maven1"
+      // Checkout the code from the Git repository
+    stage('Checkout') {
+        checkout scm  // This checks out the repository configured for the Jenkins job
+    }
 
     stage('Maven Build') {
         // Run the Maven build command (clean and package)
