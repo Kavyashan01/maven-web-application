@@ -1,24 +1,20 @@
-pipeline{
-  agent any
-  tools{
-    maven 'maven'
-   }
-  stages{
-     stage ('mvn build'){
-       steps{
-          sh 'mvn clean package'
-         }
-       post{
-          success{
-             echo"Archiving the Artifacts"
-             archiveArtifacts artifacts: '**/target/*.war'
-           }
-       }
-     }
-     stage ('deploy on tomcat'){
-       steps{
-         deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://3.110.45.46:9090/')], contextPath: null, war: '**/*.war'
-         }
-     }
-   }
+node {  // Use the default agent (executor), which would be your server in this case
+
+    // Ensure Maven is available (as an environment tool or on the system path)
+    def mvnHome = tool name: 'maven', type: 'ToolType' // This is how you define the Maven tool
+
+    stage('Maven Build') {
+        // Run the Maven build command (clean and package)
+        sh "'${mvnHome}/bin/mvn' clean package"
+        
+        // Archive the artifacts after a successful build
+        archiveArtifacts artifacts: '**/target/*.war'
+    }
+
+    stage('Deploy on Tomcat') {
+        // Deploy the WAR file to Tomcat
+        deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://3.110.45.46:9090/')], 
+            contextPath: null, war: '**/*.war'
+    }
 }
+
