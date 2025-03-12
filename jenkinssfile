@@ -1,24 +1,25 @@
-node {  // Use the default agent (executor), which would be your server in this case
-
-    // Ensure Maven is available (as an environment tool or on the system path)
-    def mvnHome = tool name: "maven1"
-      // Checkout the code from the Git repository
-    stage('Checkout') {
-        checkout scm  // This checks out the repository configured for the Jenkins job
+pipeline {
+    agent any
+    tools {
+        maven 'maven1'
     }
-
-    stage('Maven Build') {
-        // Run the Maven build command (clean and package)
-        sh "'${mvnHome}/bin/mvn' clean package"
-        
-        // Archive the artifacts after a successful build
-        archiveArtifacts artifacts: '**/target/*.war'
-    }
-
-    stage('Deploy on Tomcat') {
-        // Deploy the WAR file to Tomcat
-        deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://3.110.45.46:9090/')], 
-            contextPath: null, war: '**/*.war'
+    stages {
+        stage('Maven Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+            post{
+               success{
+                  echo "Archiving the artifacts
+                  archiveArtifacts artifacts: '**/target/*.war'
+               }
+            }
+        }
+        stage('Deploy on Tomcat') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://3.111.32.10:9090/')], contextPath: null, onFailure: false, war: '**/*.war'
+            }
+        }
     }
 }
 
