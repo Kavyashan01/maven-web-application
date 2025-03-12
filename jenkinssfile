@@ -1,7 +1,7 @@
 node {  // Use the default agent (executor), which would be your server in this case
 
     // Ensure Maven is available (as an environment tool or on the system path)
-    def mvnHome = tool name: 'maven', type: 'ToolType' // This is how you define the Maven tool
+    def mvnHome = tool name: 'maven1', type: 'ToolType' // This is how you define the Maven tool
 
     stage('Maven Build') {
         // Run the Maven build command (clean and package)
